@@ -1,4 +1,5 @@
 from .pagination import TastyPaginationSerializer
+from .exceptions import MixinException
 
 
 class TastyPieViewMixin(object):
@@ -36,15 +37,17 @@ class TastyPieSerializerMixin(object):
     """
 
     def __init__(self, *args, **kwargs):
-        self._update_meta()
+        self._patch_meta()
         super(TastyPieSerializerMixin, self).__init__(*args, **kwargs)
 
-    def _update_meta(self):
+    def _patch_meta(self):
         """
         Update the Serializer's inner Meta class settings with those needed
         for TastyPie compatibility.
         """
         error_msg = "{0} already has {1} set on its Meta class. Remove it to continue."
         attr_name = 'url_field_name'
-        assert hasattr(self.Meta, attr_name) is False, error_msg.format(repr(self), attr_name)
-        setattr(self.Meta, attr_name, 'resource_uri')
+        attr_value = 'resource_uri'
+        if hasattr(self.Meta, attr_name) and getattr(self.Meta, attr_name, None) != attr_value:
+            raise MixinException(error_msg.format(repr(self), attr_name))
+        setattr(self.Meta, attr_name, attr_value)
