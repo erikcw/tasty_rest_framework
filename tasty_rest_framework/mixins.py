@@ -1,4 +1,5 @@
 from .pagination import TastyPaginationSerializer
+from .renderers import TastyPieJSONRenderer
 from .exceptions import MixinException
 
 
@@ -8,6 +9,7 @@ class TastyPieViewMixin(object):
     funcionality.
     """
     pagination_serializer_class = TastyPaginationSerializer
+    renderer_classes = (TastyPieJSONRenderer,)
 
     paginate_by_param = 'limit'
     paginate_offset_param = 'offset'
