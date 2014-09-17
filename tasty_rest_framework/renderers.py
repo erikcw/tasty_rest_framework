@@ -13,7 +13,11 @@ class TastyPieJSONEncoder(encoders.JSONEncoder):
             # Remove TZ -- this has got to be a bug in TastyPie!
             warning_message = "TastyPieJSONEncoder strips timezone information from datetime objects and converts them to the timezone in settings.TIME_ZONE.  It is recommended that you don't use the TastyPieJSONRenderer unless you require *strict* TastyPie compatibility for datetime JSON serialization."
             warnings.warn(warning_message)
-            r = timezone.make_naive(o, timezone.get_current_timezone())
+            try:
+                r = timezone.make_naive(o, timezone.get_current_timezone())
+            except ValueError:
+                # must already be naive
+                r = o
             return r.isoformat()
         return super(TastyPieJSONEncoder, self).default(o)
 
