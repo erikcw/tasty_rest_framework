@@ -1,6 +1,7 @@
 from .pagination import TastyPaginationSerializer
 from .renderers import TastyPieJSONRenderer
 from .exceptions import MixinException
+from .serializers import TastyPieHyperlinkedIdentityField, TastyPieHyperlinkedRelatedField
 
 
 class TastyPieViewMixin(object):
@@ -37,6 +38,9 @@ class TastyPieSerializerMixin(object):
     """
     Modify serializer to behave like TastyPie
     """
+
+    _hyperlink_field_class = TastyPieHyperlinkedRelatedField
+    _hyperlink_identify_field_class = TastyPieHyperlinkedIdentityField
 
     def __init__(self, *args, **kwargs):
         self._patch_meta()
