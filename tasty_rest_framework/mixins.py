@@ -2,6 +2,7 @@ from .pagination import TastyPaginationSerializer
 from .renderers import TastyPieJSONRenderer
 from .exceptions import MixinException
 from .serializers import TastyPieHyperlinkedIdentityField, TastyPieHyperlinkedRelatedField
+import rest_framework.renderers
 
 
 class TastyPieViewMixin(object):
@@ -10,7 +11,7 @@ class TastyPieViewMixin(object):
     funcionality.
     """
     pagination_serializer_class = TastyPaginationSerializer
-    renderer_classes = (TastyPieJSONRenderer,)
+    renderer_classes = (TastyPieJSONRenderer, rest_framework.renderers.BrowsableAPIRenderer)
 
     paginate_by_param = 'limit'
     paginate_offset_param = 'offset'
