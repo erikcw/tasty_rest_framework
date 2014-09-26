@@ -2,7 +2,9 @@ from .pagination import TastyPaginationSerializer
 from .renderers import TastyPieJSONRenderer
 from .exceptions import MixinException
 from .serializers import TastyPieHyperlinkedIdentityField, TastyPieHyperlinkedRelatedField
+from rest_framework.decorators import list_route
 import rest_framework.renderers
+
 
 
 class TastyPieViewMixin(object):
@@ -33,6 +35,18 @@ class TastyPieViewMixin(object):
             page = page.paginator.page(page_number)
 
         return page
+
+    @list_route(methods=['get', 'post'])
+    def schema(self, request, *args, **kwargs):
+        """
+        For backwords compatability with Tastypie add a schema endpoint.
+
+        This simply forwards off an OPTIONS request, which is the preferred
+        method of accessing this view.
+        """
+        # need to accept POST so that actions will be displayed in the output.
+        return self.options(request, *args, **kwargs)
+
 
 
 class TastyPieSerializerMixin(object):
