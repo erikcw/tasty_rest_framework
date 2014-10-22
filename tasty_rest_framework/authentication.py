@@ -19,6 +19,11 @@ class TastyApiKeyAuthentication(authentication.TokenAuthentication):
         auth = authentication.get_authorization_header(request).split()
 
         if not auth or auth[0].lower() != b'apikey':
+            # check for URL parameter authentication
+            username = request.GET.get('username')
+            key = request.GET.get('api_key')
+            if username and key:
+                return self.authenticate_credentials(username, key)
             return None
 
         if len(auth) == 1:
