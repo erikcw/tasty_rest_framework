@@ -1,3 +1,5 @@
+from django.core.paginator import EmptyPage
+from django.http import Http404
 from .pagination import TastyPaginationSerializer
 from .renderers import TastyPieJSONRenderer
 from .exceptions import MixinException
@@ -32,7 +34,10 @@ class TastyPieViewMixin(object):
             # convert cursor into page number and fetch page
             limit = page.paginator.per_page
             page_number = (int(offset) / limit) + 1
-            page = page.paginator.page(page_number)
+            try:
+                page = page.paginator.page(page_number)
+            except EmptyPage:
+                raise Http404("Invalid offset ({0}).".format(offset))
 
         return page
 
