@@ -1,6 +1,6 @@
 from django.core.paginator import EmptyPage
 from django.http import Http404
-from .pagination import TastyPaginationSerializer
+from .pagination import TastyPagination
 from .renderers import TastyPieJSONRenderer
 from .exceptions import MixinException
 from .serializers import TastyPieHyperlinkedIdentityField, TastyPieHyperlinkedRelatedField
@@ -14,32 +14,8 @@ class TastyPieViewMixin(object):
     Use this mixin with Views and Viewsets to achieve TastyPie like
     funcionality.
     """
-    pagination_serializer_class = TastyPaginationSerializer
     renderer_classes = (TastyPieJSONRenderer, rest_framework.renderers.BrowsableAPIRenderer)
-
-    paginate_by_param = 'limit'
-    paginate_offset_param = 'offset'
-
-    def paginate_queryset(self, queryset, page_size=None):
-        """
-        Tastypie style pagination.
-        """
-        page = super(TastyPieViewMixin, self).paginate_queryset(queryset, page_size=page_size)
-
-        if page is None:
-            return page
-
-        offset = self.request.GET.get(self.paginate_offset_param)
-        if offset:
-            # convert cursor into page number and fetch page
-            limit = page.paginator.per_page
-            page_number = (int(offset) / limit) + 1
-            try:
-                page = page.paginator.page(page_number)
-            except EmptyPage:
-                raise Http404("Invalid offset ({0}).".format(offset))
-
-        return page
+    pagination_class = TastyPagination
 
     @list_route(methods=['get', 'post'])
     def schema(self, request, *args, **kwargs):
@@ -59,8 +35,8 @@ class TastyPieSerializerMixin(object):
     Modify serializer to behave like TastyPie
     """
 
-    _hyperlink_field_class = TastyPieHyperlinkedRelatedField
-    _hyperlink_identify_field_class = TastyPieHyperlinkedIdentityField
+    serializer_related_field = TastyPieHyperlinkedRelatedField
+    serializer_url_field = TastyPieHyperlinkedIdentityField
 
     def __init__(self, *args, **kwargs):
         self._patch_meta()
@@ -77,3 +53,5 @@ class TastyPieSerializerMixin(object):
         if hasattr(self.Meta, attr_name) and getattr(self.Meta, attr_name, None) != attr_value:
             raise MixinException(error_msg.format(repr(self), attr_name))
         setattr(self.Meta, attr_name, attr_value)
+
+
