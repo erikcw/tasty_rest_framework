@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='tasty_rest_framework',
-      version='0.1',
+      version='0.2',
       description='A TastyPie compatibility layer for projects migrating to Django Rest Framework.',
       url='http://github.com/erikcw/tasty_rest_framework.git',
       author='Erik Wickstrom',
