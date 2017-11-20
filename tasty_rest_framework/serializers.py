@@ -7,7 +7,7 @@ class TastyPieHyperlinkedIdentityField(HyperlinkedIdentityField):
         url = super(TastyPieHyperlinkedIdentityField, self).get_url(obj, view_name, request, format)
         # make a relative url by removing the scheme and host.
         parts = urllib.parse.urlsplit(url)
-        url = urllib.parse.urlunsplit((None, None, parts.path, parts.query, parts.fragment,))
+        url = urllib.parse.urlunsplit(("", None, parts.path, parts.query, parts.fragment,))
         return url
 
 
