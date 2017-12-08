@@ -34,6 +34,8 @@ class TastyApiKeyAuthentication(authentication.TokenAuthentication):
             raise exceptions.AuthenticationFailed(msg)
 
         try:
+            username, key = auth[1].decode('utf-8').split(':')
+        except AttributeError:
             username, key = auth[1].split(':')
         except ValueError:
             raise exceptions.AuthenticationFailed('Invalid username token pair')
