@@ -4,7 +4,7 @@ from .pagination import TastyPagination
 from .renderers import TastyPieJSONRenderer
 from .exceptions import MixinException
 from .serializers import TastyPieHyperlinkedIdentityField, TastyPieHyperlinkedRelatedField
-from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 import rest_framework.renderers
 
 
@@ -17,7 +17,7 @@ class TastyPieViewMixin(object):
     renderer_classes = (TastyPieJSONRenderer, rest_framework.renderers.BrowsableAPIRenderer)
     pagination_class = TastyPagination
 
-    @list_route(methods=['get', 'post'])
+    @action(detail=False, methods=['get', 'post'])
     def schema(self, request, *args, **kwargs):
         """
         For backwords compatability with Tastypie add a schema endpoint.
